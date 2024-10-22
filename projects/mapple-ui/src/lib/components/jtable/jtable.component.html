@@ -1,0 +1,98 @@
+<div class="table-controls">
+  <button (click)="saveAll()">Save All Changes</button>
+</div>
+
+<table class="table">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>String</th>
+    <th>Integer</th>
+    <th>Float</th>
+    <th>Money</th>
+    <th>Date</th>
+    <th>Time</th>
+    <th>Enumeration</th>
+    <th>Boolean</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let row of data">
+    <td>{{ row.id }}</td>
+    <td>
+      <div *ngIf="!row.editable">{{ row.string }}</div>
+      <input *ngIf="row.editable" [(ngModel)]="row.string" type="text" placeholder="Enter name">
+    </td>
+    <td>
+      <div *ngIf="!row.editable">{{ row.integer }}</div>
+      <input *ngIf="row.editable" [(ngModel)]="row.integer" type="number" placeholder="Enter integer value">
+    </td>
+    <td>
+      <div *ngIf="!row.editable">{{ row.float }}</div>
+      <input *ngIf="row.editable" [(ngModel)]="row.float" type="number" step="0.01" placeholder="Enter decimal value">
+    </td>
+    <td>
+      <div *ngIf="!row.editable">{{ row.money | currency }}</div>
+      <input *ngIf="row.editable" [(ngModel)]="row.money" type="number" step="0.01" placeholder="Enter amount">
+    </td>
+    <td>
+      <div *ngIf="!row.editable">{{ row.date | date: 'yyyy-MM-dd' }}</div>
+      <!--
+      <input *ngIf="row.editable" [(ngModel)]="row.date" type="date">
+      -->
+      <input *ngIf="row.editable" [(ngModel)]="row.date" [ngModelOptions]="{ updateOn: 'blur' }" (ngModelChange)="onDateChange($event, row)" type="date">
+    </td>
+    <td>
+      <div *ngIf="!row.editable">{{ row.time }}</div>
+      <input *ngIf="row.editable" [(ngModel)]="row.time" type="time" placeholder="HH:MM">
+    </td>
+    <td>
+      <div *ngIf="!row.editable">{{ row.enumeration | dayName }}</div>
+      <select *ngIf="row.editable" [(ngModel)]="row.enumeration">
+        <option value="" disabled>Select a day</option>
+        <option value="MON">Monday</option>
+        <option value="TUE">Tuesday</option>
+        <option value="WED">Wednesday</option>
+        <option value="THU">Thursday</option>
+        <option value="FRI">Friday</option>
+        <option value="SAT">Saturday</option>
+        <option value="SUN">Sunday</option>
+      </select>
+    </td>
+    <td>
+      <div *ngIf="!row.editable">{{ row.boolean ? 'Yes' : 'No' }}</div>
+      <input *ngIf="row.editable" [(ngModel)]="row.boolean" type="checkbox">
+    </td>
+    <td>
+      <button *ngIf="!row.editable" (click)="enableEditing(row)">Edit</button>
+      <button *ngIf="row.editable" (click)="save(row)">Save</button>
+      <button *ngIf="row.editable" (click)="cancel(row)">Cancel</button>
+    </td>
+  </tr>
+  <!-- Add row for inserting new data, ID not editable by user -->
+  <tr>
+    <td>{{ newRow.id || 'Auto' }}</td>
+    <td><input [(ngModel)]="newRow.string" type="text" placeholder="Enter name"></td>
+    <td><input [(ngModel)]="newRow.integer" type="number" placeholder="Enter age"></td>
+    <td><input [(ngModel)]="newRow.float" type="number" step="0.01" placeholder="0.00"></td>
+    <td><input [(ngModel)]="newRow.money" type="number" step="0.01" placeholder="1.20"></td>
+    <td><input [(ngModel)]="newRow.date" type="date"></td>
+    <td><input [(ngModel)]="newRow.time" type="time"></td>
+    <td>
+      <select [(ngModel)]="newRow.enumeration">
+        <option value="" disabled selected>Select a day</option>
+        <option value="MON">Monday</option>
+        <option value="TUE">Tuesday</option>
+        <option value="WED">Wednesday</option>
+        <option value="THU">Thursday</option>
+        <option value="FRI">Friday</option>
+        <option value="SAT">Saturday</option>
+        <option value="SUN">Sunday</option>
+      </select>
+    </td>
+    <td><input [(ngModel)]="newRow.boolean" type="checkbox"></td>
+    <td><button (click)="addNewRow()" [disabled]="!newRow.string || newRow.integer == null">Add</button></td>
+  </tr>
+  </tbody>
+</table>
